@@ -3,11 +3,6 @@ jobs:
   create_builder:
     machine: true
     steps:
-      - run:
-          name: Setup Environment Variables
-          command: |
-            echo 'export CI_PROJECT_PATH="$(echo "$CIRCLE_PROJECT_USERNAME" | tr "[:upper:]" "[:lower:]")/$(echo "$CIRCLE_PROJECT_REPONAME" | tr "[:upper:]" "[:lower:]")"' >> $BASH_ENV
-
       - checkout
       - restore_cache:
           key: builder-{{ checksum ".builder/Dockerfile" }}
@@ -31,7 +26,7 @@ jobs:
     docker:
       - image: "$CI_PROJECT_PATH-builder:latest"
       
-    working_directory: /go/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
+    working_directory: /go/src/github.com/MeneDev/dockfix
     environment:
       - DEP_VERSION: 0.5.0
       - GOCACHE: "/tmp/go/cache"
@@ -67,7 +62,7 @@ jobs:
             - release
   release:
     docker:
-      - image: "$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME-builder:latest"
+      - image: "$CI_PROJECT_PATH-builder:latest"
     steps:
       - checkout
       - attach_workspace:
