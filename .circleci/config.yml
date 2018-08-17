@@ -13,9 +13,9 @@ jobs:
           command:  |
             if [ ! -f /tmp/docker_pushed ]; then
               docker login -u $DOCKER_USER -p $DOCKER_PASS
-              echo "Building $(echo "$CIRCLE_PROJECT_USERNAME" | tr '[:upper:]' '[:lower:]')/$(echo "$CIRCLE_PROJECT_REPONAME" | tr '[:upper:]' '[:lower:]')-builder:latest"
-              docker build -f .builder/Dockerfile -t "$(echo "$CIRCLE_PROJECT_USERNAME" | tr '[:upper:]' '[:lower:]')/$(echo "$CIRCLE_PROJECT_REPONAME" | tr '[:upper:]' '[:lower:]')-builder:latest" .
-              docker push "$(echo "$CIRCLE_PROJECT_USERNAME" | tr '[:upper:]' '[:lower:]')/$(echo "$CIRCLE_PROJECT_REPONAME" | tr '[:upper:]' '[:lower:]')-builder:latest"
+              echo "Building $CI_PROJECT_PATH-builder:latest"
+              docker build -f .builder/Dockerfile -t $CI_PROJECT_PATH-builder:latest" .
+              docker push $CI_PROJECT_PATH-builder:latest"
               echo 1 > /tmp/docker_pushed
             fi
       - save_cache:
@@ -24,7 +24,7 @@ jobs:
               - /tmp/builder_pushed
   build:
     docker:
-      - image: "$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME-builder:latest"
+      - image: "$CI_PROJECT_PATH-builder:latest"
       
     working_directory: /go/src/github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME
     environment:
@@ -62,7 +62,7 @@ jobs:
             - release
   release:
     docker:
-      - image: "$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME-builder:latest"
+      - image: "$CI_PROJECT_PATH-builder:latest"
     steps:
       - checkout
       - attach_workspace:
