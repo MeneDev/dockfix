@@ -20,7 +20,7 @@ jobs:
               docker login -u $DOCKER_USER -p $DOCKER_PASS
               echo "Building $CI_PROJECT_PATH-builder:latest"
               docker build -f .builder/Dockerfile -t "$CI_PROJECT_PATH-builder:latest" .
-              docker push "$(echo "$CI_PROJECT_PATH-builder:latest"
+              docker push "$CI_PROJECT_PATH-builder:latest"
               echo 1 > /tmp/docker_pushed
             fi
       - save_cache:
