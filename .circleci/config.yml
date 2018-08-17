@@ -55,7 +55,7 @@ jobs:
           name: Build project
           command: |
             tag="$(semantics --output-tag --dry-run 2>/dev/null || true)"
-            gox -ldflags="-s -w -X \"main.Version=${tag:-not a release}\" -X \"main.BuildDate=$(date --utc)\" -X \"main.BuildNumber=$CIRCLE_BUILD_NUM\" -X \"main.BuildCommit=$CIRCLE_SHA1\"" -os="linux" -arch="amd64" -output "release/$CIRCLE_PROJECT_REPONAME-{{.OS}}_{{.Arch}}"
+            gox -ldflags="-s -w -X \"main.Version=${tag:-not a release}\" -X \"main.BuildDate=$(date --utc)\" -X \"main.BuildNumber=$CIRCLE_BUILD_NUM\" -X \"main.BuildCommit=$CIRCLE_SHA1\"" -os="linux" -arch="amd64" -output "release/$CIRCLE_PROJECT_REPONAME-{{.OS}}_{{.Arch}}" cmd/
 
       - persist_to_workspace:
           root: .
