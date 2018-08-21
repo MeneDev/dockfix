@@ -64,16 +64,6 @@ jobs:
             tag="$(semantics --output-tag --dry-run 2>/dev/null || true)"
             find cmd/ -maxdepth 1 -mindepth 1 -exec bash -c 'cd $0 && gox -ldflags="-s -w -X \"main.Version=${tag:-not a release}\" -X \"main.BuildDate=$(date --utc)\" -X \"main.BuildNumber=$CIRCLE_BUILD_NUM\" -X \"main.BuildCommit=$CIRCLE_SHA1\"" -os="linux windows darwin" -arch="amd64" -output "../../release/${0##*/}-{{.OS}}_{{.Arch}}"' {} \;
 
-      - run:
-          name: Update README.md
-          command: |
-            release/dockfix-linux_amd64 --markdown > release/README.md
-            cat release/README.md
-            git add README.md
-            git commit -m ":books: Update README.md for release"
-            git $GITHUB_TOKEN
-            git push -q https://${DOCS_GITHUB_TOKEN}@github.com/MeneDev/dockfix.git release
-
       - persist_to_workspace:
           root: .
           paths:
@@ -81,10 +71,20 @@ jobs:
   release:
     docker:
       - image: "$CI_PROJECT_PATH-builder:latest"
+    working_directory: /go/src/github.com/MeneDev/dockfix
     steps:
       - checkout
       - attach_workspace:
           at: /tmp/workspace
+      - run:
+          name: Update README.md
+          command: |
+            /tmp/workspace/release/dockfix-linux_amd64 --markdown > README.md
+            cat release/README.md
+            git add README.md
+            git commit -am ":books: Update README.md for release"
+            git push -q https://${DOCS_GITHUB_TOKEN}@github.com/MeneDev/dockfix.git master
+
       - run:
           name: Release new version if applicable
           command: |
@@ -94,7 +94,8 @@ jobs:
             else
               echo "not releasing, no new version"
             fi
-      
+
+
 workflows:
   version: 2
   create_builder_and_release:
@@ -109,4 +110,5 @@ workflows:
           filters:
             branches:
               only:
-                - master
+                - release
+                
