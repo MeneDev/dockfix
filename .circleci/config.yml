@@ -61,7 +61,7 @@ jobs:
       - run:
           name: Build project
           command: |
-            tag="$(semantics --output-tag --dry-run 2>/dev/null || true)"
+            tag="$(git describe --tags 2>/dev/null | grep -E '^v.*' || true)"
             find cmd/ -maxdepth 1 -mindepth 1 -exec bash -c 'cd $0 && gox -ldflags="-s -w -X \"main.Version=${tag:-not a release}\" -X \"main.BuildDate=$(date --utc)\" -X \"main.BuildNumber=$CIRCLE_BUILD_NUM\" -X \"main.BuildCommit=$CIRCLE_SHA1\"" -os="linux windows darwin" -arch="amd64" -output "../../release/${0##*/}-{{.OS}}_{{.Arch}}"' {} \;
 
       - persist_to_workspace:
@@ -80,15 +80,15 @@ jobs:
           name: Update README.md
           command: |
             /tmp/workspace/release/dockfix-linux_amd64 --markdown > README.md
-            cat release/README.md
+            tag="$(git describe --tags 2>/dev/null | grep -E '^v.*' || true)"
             git add README.md
-            git commit -am ":books: Update README.md for release"
+            git commit -am ":gem: Release $tag"
             git push -q https://${DOCS_GITHUB_TOKEN}@github.com/MeneDev/dockfix.git master
 
       - run:
           name: Release new version if applicable
           command: |
-            tag="$(semantics --output-tag --dry-run)"
+            tag="$(git describe --tags 2>/dev/null | grep -E '^v.*' || true)"
             if [ ! -z "$tag" ]; then
               ghr -t "$GITHUB_TOKEN" -u "$CIRCLE_PROJECT_USERNAME" -r "$CIRCLE_PROJECT_REPONAME" --replace "$tag" /tmp/workspace/release/
             else
