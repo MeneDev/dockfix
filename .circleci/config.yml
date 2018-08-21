@@ -81,6 +81,9 @@ jobs:
           command: |
             /tmp/workspace/release/dockfix-linux_amd64 --markdown > README.md
             tag="$(git describe --tags 2>/dev/null | grep -E '^v.*' || true)"
+            git config --global user.email "$GIT_EMAIL"
+            git config --global user.name "$GIT_USER"
+
             git add README.md
             git commit -am ":gem: Release $tag"
             git push -q https://${DOCS_GITHUB_TOKEN}@github.com/MeneDev/dockfix.git master
