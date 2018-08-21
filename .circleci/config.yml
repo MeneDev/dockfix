@@ -100,15 +100,26 @@ workflows:
   version: 2
   create_builder_and_release:
     jobs:
-      - create_builder
+      - create_builder:
+          filters:
+            branches:
+              ignore:
+              - master
       - build:
           requires:
               - create_builder
+          filters:
+            branches:
+              ignore:
+              - master
       - release:
           requires:
               - build
           filters:
+            tags:
+              only: /^v.*/
             branches:
               only:
                 - release
-                
+              ignore:
+                - master
