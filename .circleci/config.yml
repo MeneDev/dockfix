@@ -91,7 +91,7 @@ jobs:
 
             git add README.md
             git commit -m ":gem: Release $tag"
-            git push -q https://${DOCS_GITHUB_TOKEN}@github.com/MeneDev/dockfix.git master
+            git push -q origin master
 
       - run:
           name: Release new version if applicable
