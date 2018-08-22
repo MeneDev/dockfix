@@ -84,7 +84,7 @@ jobs:
             git config --global user.name "$GIT_USER"
 
             digest=$(git rev-parse HEAD)
-            git checkout -b master
+            git checkout -b master origin/master
             git reset --hard $digest
 
             /tmp/workspace/release/dockfix-linux_amd64 --markdown > README.md
