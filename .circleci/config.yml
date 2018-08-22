@@ -93,7 +93,7 @@ jobs:
             git add README.md
             git commit -m ":gem: Release $tag"
             git push --delete origin "$tag"
-            git tag -fa "$tag" - "Release $tag"
+            git tag -fa "$tag" -m "Release $tag"
             git push --force-with-lease origin master --tags
 
             digest=$(git rev-parse HEAD)
