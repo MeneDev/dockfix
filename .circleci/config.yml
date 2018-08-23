@@ -84,7 +84,9 @@ jobs:
           command: |
             set -v
             tag=$CIRCLE_TAG
+            echo $tag
             tag=${tag:-"$(git describe --tags 2>/dev/null | grep -E '^v.*' || true)"}
+            echo $tag
             git config --global user.email "$GIT_EMAIL"
             git config --global user.name "$GIT_USER"
 
@@ -108,8 +110,11 @@ jobs:
       - run:
           name: Release new version if applicable
           command: |
+            set -v
             tag=$CIRCLE_TAG
+            echo $tag
             tag=${tag:-"$(git describe --tags 2>/dev/null | grep -E '^v.*' || true)"}
+            echo $tag
             if [ ! -z "$tag" ]; then
               ghr -t "$GITHUB_TOKEN" -u "$CIRCLE_PROJECT_USERNAME" -r "$CIRCLE_PROJECT_REPONAME" --replace "$tag" /tmp/workspace/release/
             else
@@ -139,8 +144,3 @@ workflows:
           filters:
             tags:
               only: /^v.*/
-            branches:
-              only:
-                - develop
-              ignore:
-                - master
