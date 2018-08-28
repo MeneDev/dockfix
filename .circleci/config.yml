@@ -83,8 +83,12 @@ jobs:
           name: Update README.md
           command: |
             set -v
+            echo "CIRCLE_SHA1: $CIRCLE_SHA1"
+            echo "CIRCLE_TAG: $CIRCLE_TAG"
+            
             tag=$CIRCLE_TAG
-            echo $tag
+            git describe --tags
+            echo "tag: $tag"
             tag=${tag:-"$(git describe --tags 2>/dev/null | grep -E '^v.*' || true)"}
             echo $tag
             git config --global user.email "$GIT_EMAIL"
@@ -98,8 +102,8 @@ jobs:
 
             git add README.md
             git commit -m ":gem: Release $tag"
-            git push --delete origin "$tag"
             git tag -fa "$tag" -m "Release $tag"
+            git push --delete origin "$tag"
             git push --force-with-lease origin master --tags
 
             digest=$(git rev-parse HEAD)
@@ -108,7 +112,7 @@ jobs:
             git push origin develop
 
       - run:
-          name: Release new version if applicable
+          name: Release new version
           command: |
             set -v
             tag=$CIRCLE_TAG
