@@ -85,7 +85,7 @@ jobs:
             set -v
             echo "CIRCLE_SHA1: $CIRCLE_SHA1"
             echo "CIRCLE_TAG: $CIRCLE_TAG"
-            
+
             tag=$CIRCLE_TAG
             git describe --tags
             echo "tag: $tag"
