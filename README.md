@@ -1,5 +1,5 @@
 # dockfix [![CircleCI](https://circleci.com/gh/MeneDev/dockfix.svg?style=shield)](https://circleci.com/gh/MeneDev/dockfix) [![Coverage Status](https://coveralls.io/repos/github/MeneDev/dockfix/badge.svg)](https://coveralls.io/github/MeneDev/dockfix)
-dockfix Version v0.0.1-rc10-1-g7d204ab
+dockfix Version v0.0.1-rc12
 
 Manage docker image references.
 
