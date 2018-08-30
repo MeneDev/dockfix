@@ -65,6 +65,7 @@ jobs:
             tag=${tag:-"$(git describe --tags 2>/dev/null | grep -E '^v.*' || true)"}
             echo "Building Tag '$tag'"
             echo "CIRCLE_TAG is $CIRCLE_TAG"
+            export tag
             find cmd/ -maxdepth 1 -mindepth 1 -exec bash -c 'cd $0 && gox -ldflags="-s -w -X \"main.Version=${tag}\" -X \"main.BuildDate=$(date --utc)\" -X \"main.BuildNumber=$CIRCLE_BUILD_NUM\" -X \"main.BuildCommit=$CIRCLE_SHA1\"" -os="linux windows darwin" -arch="amd64" -output "../../release/${0##*/}-{{.OS}}_{{.Arch}}"' {} \;
             ls
             ls release
