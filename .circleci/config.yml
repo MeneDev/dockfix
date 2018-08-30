@@ -62,7 +62,7 @@ jobs:
           name: Build project
           command: |
             set -v
-            git log --pretty=format:"%h %s" --graph
+            git --no-pager log --pretty=format:"%h %s" --graph
             tag=$CIRCLE_TAG
             tag=${tag:-"$(git describe --tags 2>/dev/null | grep -E '^v.*' || true)"}
             echo "Building Tag '$tag'"
@@ -89,7 +89,7 @@ jobs:
           name: Update README.md
           command: |
             set -v
-            git log --pretty=format:"%h %s" --graph
+            git --no-pager log --pretty=format:"%h %s" --graph
             echo "CIRCLE_SHA1: $CIRCLE_SHA1"
             echo "CIRCLE_TAG: $CIRCLE_TAG"
 
