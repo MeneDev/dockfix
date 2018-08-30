@@ -61,6 +61,8 @@ jobs:
       - run:
           name: Build project
           command: |
+            set -v
+            git log --pretty=format:"%h %s" --graph
             tag=$CIRCLE_TAG
             tag=${tag:-"$(git describe --tags 2>/dev/null | grep -E '^v.*' || true)"}
             echo "Building Tag '$tag'"
@@ -87,6 +89,7 @@ jobs:
           name: Update README.md
           command: |
             set -v
+            git log --pretty=format:"%h %s" --graph
             echo "CIRCLE_SHA1: $CIRCLE_SHA1"
             echo "CIRCLE_TAG: $CIRCLE_TAG"
 
@@ -107,7 +110,7 @@ jobs:
             git add README.md
             git commit -m ":gem: Release $tag"
             git tag -fa "$tag" -m "Release $tag"
-            git push --delete origin "$tag"
+            git push --delete origin "$tag" || true
             git push --force-with-lease origin master --tags
 
             digest=$(git rev-parse HEAD)
